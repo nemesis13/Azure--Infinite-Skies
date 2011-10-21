@@ -8,7 +8,7 @@ IGNORE_ALL, IGNORE, RAISE, DIE = range(4)
 # IGNORE_ALL - Ignore an AzureError, and don't print AzureError messages
 # IGNORE - Ignore an AzureError, but print AzureError messages
 # RAISE - Keep the thrown AzureError raised for some other code to handle
-# DIE - Die on a thrown AzureError; 
+# DIE - Die on a thrown AzureError;
 err_action = RAISE
 
 def setErrAction(actionNum):
