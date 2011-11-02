@@ -21,7 +21,7 @@ class ControlState(DirectObject):
     Control States are a kind of FSM, but instead of multiple states per FSM
     where one or none is active at a time you have single states you turn on
     and off. By instancing states in states you can have collections of certain
-    behaviors inside simple classes. 
+    behaviors inside simple classes.
     """
     conf_parser = SafeConfigParser()
     f = Filename(EE.expandString("$MAIN_DIR/etc/keybindings.ini"))

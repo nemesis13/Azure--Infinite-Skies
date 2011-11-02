@@ -4,7 +4,7 @@ import gui
 
 
 class Developmentenvironment(Scenario):
-    
+
 name = "Development Environment"
 # having such long paths here is so suboptimal..
 models = ["planes/griffin/griffin",]

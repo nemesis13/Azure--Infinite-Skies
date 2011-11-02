@@ -182,20 +182,20 @@ class Water(NodePath, DirectObject):
         # water surface.
         buffer = base.win.makeTextureBuffer("water reflection", 1024, 1024)
         buffer.setClearColor(Vec4(0, 0, 0, 1))
-        
+
         self.refl_cam = base.makeCamera(buffer)
         self.refl_cam.reparentTo(render)
         self.refl_cam.node().setCameraMask(BitMask32.bit(1))
         self.refl_cam.node().getLens().setFov(base.camLens.getFov())
         self.refl_cam.node().getLens().setNearFar(1,100000)
-        
+
         plane = PlaneNode("water culling plane",
                           Plane(Vec3(0, 0, 1), Point3(0, 0, 0)))
         cfa = CullFaceAttrib.makeReverse()
         cpa = ClipPlaneAttrib.make(PlaneNode.CEVisible, plane)
         rs = RenderState.make(cfa, cpa)
         self.refl_cam.node().setInitialState(rs)
-        
+
         reflection = buffer.getTexture()
         reflection.setMinfilter(Texture.FTLinear)
         reflection.setMagfilter(Texture.FTLinear)
@@ -226,7 +226,7 @@ class Water(NodePath, DirectObject):
                   0, 0, -1, 0,
                   0, 0, 0, 1)
         self.refl_cam.setMat(mc * mf)
-        
+
         self.setX(camera.getX(render))
         self.setY(camera.getY(render))
         self.setTexOffset(self.diffuse_stage,

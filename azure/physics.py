@@ -43,22 +43,22 @@ class AeroplanePhysics(Physical):
         # dynamic variables
         self.acceleration = Vec3(0.0,0.0,0.0)
         self.angle_of_attack = 0.0
-        
+
         # state variables
         self.rudder = 0.0
         self.ailerons = 0.0
         self.elevator = 0.0
-        
-        
+
+
         self.ode_body = OdeBody(self.world)
         # positions and orientation are set relative to render
         self.ode_body.setPosition(self.node.getPos(render))
         self.ode_body.setQuaternion(self.node.getQuat(render))
-        
+
         self.ode_mass = OdeMass()
         self.ode_mass.setBox(self.mass, 1, 1, 1)
         self.ode_body.setMass(self.ode_mass)
-        
+
         self.accumulator = 0.0
         self.step_size = 0.02
         taskMgr.add(self.simulationTask,
@@ -105,20 +105,20 @@ class AeroplanePhysics(Physical):
         self.yaw_damping = -100
         self.pitch_damping = -100
         self.roll_damping = -100
-        
+
         self.terminal_yaw = 3
         self.terminal_pitch = 3
         self.terminal_roll = 3
-        
+
         self.rudder_coefficient = 1.0
         self.elevator_coefficient = 4.5
         self.ailerons_coefficient = 5.5
-        
+
         self.pitch_force_coefficient = 4.0
         self.heading_force_coefficient = 1.0
         self.pitch_torque_coefficient = 0.1
         self.heading_torque_coefficient = 12.0
-    
+
     def move(self, movement):
         """Plane movement management."""
         if movement == "roll-left":
@@ -161,7 +161,7 @@ class AeroplanePhysics(Physical):
         self.drag_factor_z = (-1.0) * half_rho * self.drag_area_z * \
                                                  self.drag_coef_z
 
-        self.gravity = Vec3(0.0,0.0,-9.81) 
+        self.gravity = Vec3(0.0,0.0,-9.81)
         self.gravityM = self.gravity * self.mass
 
     def _wingAngleOfAttack(self,v_norm,up):
@@ -235,9 +235,9 @@ class AeroplanePhysics(Physical):
         if p.getZ() == 0.0:
             if force[2] < 0.0:
                 force.setZ(0.0)
-        
+
         return force
-    
+
     def angleOfAttack(self):
         return self.angle_of_attack
     def gForceTotal(self):
@@ -267,11 +267,11 @@ class AeroplanePhysics(Physical):
         return Vec3(self.ode_body.getLinearVel())
     def setVelocity(self,v):
         self.ode_body.setLinearVel(v)
-    
+
     def angVelVector(self):
         """ return the current angular velocity as a vector """
         return self.ode_body.getAngularVel()
-    
+
     def angVelBodyHpr(self):
         """ return the heading, pitch and roll values about the body axis """
         angv = self.angVelVector()
@@ -280,28 +280,28 @@ class AeroplanePhysics(Physical):
         p = angv.dot(quat.getRight())
         r = angv.dot(quat.getForward())
         return h,p,r
-    
+
     def setAngularVelocity(self,v):
         self.ode_body.setAngularVel(v)
-    
+
     def speed(self):
         """ returns the current velocity """
         return self.velocity().length()
-        
+
     def position(self):
         """ return the current position """
         return self.ode_body.getPosition()
     def setPosition(self,p):
         self.ode_body.setPosition(p)
-    
+
     def altitude(self):
         """ returns the current altitude """
         return self.position().getZ()
-    
+
     def quat(self):
         """ return the current quaternion representation of the attitude """
         return Quat(self.ode_body.getQuaternion())
-    
+
     def _controlRotForce(self,control,axis,coeff,speed,rspeed,max_rspeed):
         """ generic control rotation force
         control - positive or negative amount of elevator/rudder/ailerons
@@ -315,36 +315,36 @@ class AeroplanePhysics(Physical):
             return axis * control * coeff * speed
         else:
             return Vec3(0.0,0.0,0.0)
-    
+
     def _rotDamping(self,vector,rotv,damping_factor):
         """ generic damping """
         damp = damping_factor * rotv
-        
+
         # rather than trusting that we have the sign right at any point
         # decide sign of the returned value based on the speed
         if rotv < 0.0:
             return vector * abs(damp)
         else:
             return vector * -abs(damp)
-    
+
     def _forwardAndVelocityVectorForces(self,up,right,norm_v,speed):
         """ calculates torque and force resulting from deviation of the
         velocity vector from the forward vector """
-        
+
         # could do with a better name for this method
-        
+
         # get the projection of the normalised velocity onto the up and
         # right vectors to find relative pitch and heading angles
         p_angle = acos(up.dot(norm_v)) - pi/2
         h_angle = acos(right.dot(norm_v)) - pi/2
-        
+
         torque_p = p_angle*self.pitch_torque_coefficient*speed
         torque_h = h_angle*self.heading_torque_coefficient*speed
         force_p = p_angle*self.pitch_force_coefficient*speed
         force_h = h_angle*self.heading_force_coefficient*speed
-        
+
         return Vec3(-torque_p, 0.0, torque_h), Vec3(-force_p, 0.0, force_h)
-    
+
     def simulationTask(self,task):
         """Update position and velocity based on aerodynamic forces."""
         delta_time = global_clock.getDt()
@@ -354,22 +354,22 @@ class AeroplanePhysics(Physical):
         while self.accumulator > self.step_size:
             self.accumulator -= self.step_size
             updated = True
-            
+
             position = self.position()
             velocity = self.velocity()
             speed = velocity.length()
             norm_v = velocity + Vec3(0.0,0.0,0.0)
             norm_v.normalize()
-            
+
             yawv,pitchv,rollv = self.angVelBodyHpr()
-            
+
             quat = self.quat()
             forward = quat.getForward()
             up = quat.getUp()
             right = quat.getRight()
-            
+
             linear_force = self._force(position,velocity,right,up,forward)
-            
+
             self.ode_body.addForce(linear_force)
 
             # Control forces:

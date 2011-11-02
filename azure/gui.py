@@ -72,7 +72,7 @@ class HUD(object):
         self.heading_text = self.createOnscreenText((0.0, 0.95),
                                     align=TextNode.ACenter,framecolour=colour)
 
-        # create and store the pitchladder lines and numbers - positioning of 
+        # create and store the pitchladder lines and numbers - positioning of
         #       these are dealt with as the HUD is updated
         lines,leftnumbers,rightnumbers = self.createPitchLadder(HUD.PITCH_STEP)
         self.pitchlines = lines
@@ -88,7 +88,7 @@ class HUD(object):
         if colour is None:
             colour = self.colour
 
-        # load the image, put it in aspect2d and make sure 
+        # load the image, put it in aspect2d and make sure
         #       transparency is respected
         vel_ind = OnscreenImage(image="gui/velocityindicator.png",
                                     pos = (0.0,0.0,0.0),scale=0.05,color=colour)
@@ -128,12 +128,12 @@ class HUD(object):
             else:
                 pitchlines[angletext] = self.createPitchLine(otherpoints,
                                                                 0.05,colour)
-            
+
             if angletext != 0:
                 # create two numbers to display either side of the pitch line
                 pitchnumbersL[angletext] = self.createText(str(angletext))
                 pitchnumbersR[angletext] = self.createText(str(angletext))
-                
+
                 # reparent to the previously created pitchline so the position
                 #       and orientation is described relative to the pitchline
                 pitchnumbersL[angletext][1].reparentTo(pitchlines[angletext])
@@ -170,12 +170,12 @@ class HUD(object):
         velocity = self.model.physics.velocity()
         normalized_velocity = velocity * 1.0
         normalized_velocity.normalize()
-        
+
         quat = self.model.physics.quat()
         forward = quat.getForward()
-        
+
         self.staticElementUpdate(forward)
-        
+
         # estimate the screen point which best describes the velocity vector
         velocity_axis = self.getScreenPoint(normalized_velocity)
         self.velocity_indicator.setPos(velocity_axis.getX(),0.0,velocity_axis.getY())
@@ -192,25 +192,25 @@ class HUD(object):
             # although we have defined all the pitch lines, there is certainly
             #       no reason to display them all..
             if angle > pitch - 45 and angle < pitch + 45:
-                # adding a vector with the tan of the angle rotates the 
+                # adding a vector with the tan of the angle rotates the
                 #       normalised level vector to that angle
                 pitchedline = levelforward + Vec3(0.0,0.0,tan(radians(angle)))
                 pitchedline.normalize()
                 # calculate the appropriate screen position for this vector
                 pitched_axis = self.getScreenPoint(pitchedline)
-                
+
                 # roll the line so that it is level with the horizon
                 line.setR(-roll)
                 # and move to the calculated position
                 line.setPos(pitched_axis.getX(),0.0,pitched_axis.getY())
-                
+
                 # finally we modify the numbers associated with the lines..
                 # the following transformations are specified relative to
                 # the lines
-                
+
                 # as we don't have numbers on the zero line..
                 if angle != 0:
-                    # line rotation caused the numbers to rotate so we'll 
+                    # line rotation caused the numbers to rotate so we'll
                     # rotate back
                     self.pitchnumbersL[angle][1].setR(roll)
                     self.pitchnumbersR[angle][1].setR(roll)
@@ -568,7 +568,7 @@ class MainMenu(object):
                 "relief":None, "rolloverSound":None, "clickSound":None,
                 "pressEffect":0, "frameVisibleScale":(0.1,0.1), "sortOrder":2,
                 "text_wordwrap":7, "parent":self.parent_node}
-        
+
         self.buttons = []
         lengths = 0
         for caption, function in mainmenu:

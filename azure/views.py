@@ -175,7 +175,7 @@ class PlaneCamera(FSM, DirectObject):
             return (request,) + args
         if request == "Sideview":
             return (request,) + args
-        
+
         # Depending on airplane.
         if not self.cameras.find("camera " + request).isEmpty():
             # TODO(Nemesis13, 26.10.09): add some nice camera transition

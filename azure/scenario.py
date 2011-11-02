@@ -35,7 +35,7 @@ class Scenario(object):
 
     def _preload(self, task, async=False, atonce=False, force=False):
         """Implicitly preload 3d models, fonts and other assets.
-        
+
         Arguments:
         async -- load asynchronously (in a new thread). this keeps the whole
                  program responsive
